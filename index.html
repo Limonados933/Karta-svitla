@@ -43,13 +43,15 @@ fetch('power-status.json')
       .then(geo => {
         L.geoJSON(geo, {
           style: feature => ({
-            fillColor: getColor(powerStatus[feature.properties.name]),
+            fillColor: getColor(powerStatus[feature.properties.shapeName]
+),
             weight: 1,
             color: '#555',
             fillOpacity: 0.75
           }),
           onEachFeature: (feature, layer) => {
-            const status = powerStatus[feature.properties.name] || 'on';
+            const status = powerStatus[feature.properties.shapeName]
+ || 'on';
             layer.bindPopup(
               `<b>${feature.properties.name}</b><br>Статус: ${status}`
             );
