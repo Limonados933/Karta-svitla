@@ -1,0 +1,11 @@
+{
+  "Kyiv": "off",
+  "Lviv": "on",
+  "Odesa": "limit",
+  "Kharkiv": "off",
+  "Dnipro": "on",
+  "Zaporizhzhia": "limit",
+  "Vinnytsia": "on",
+  "Ivano-Frankivsk": "on",
+  "Volyn": "on"
+}
