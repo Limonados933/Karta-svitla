@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Карта відключень світла</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<style>
+  body, html { margin:0; height:100%; }
+  #map { height:100vh; }
+</style>
+</head>
+
+<body>
+<div id="map"></div>
+
+<script>
+const map = L.map('map').setView([49, 31], 6);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap'
+}).addTo(map);
+
+let powerStatus = {};
+
+// кольори як у карти тривог
+function getColor(status) {
+  return status === 'off' ? '#e53935' :
+         status === 'limit' ? '#fbc02d' :
+         '#43a047';
+}
+
+// завантаження статусів
+fetch('power-status.json')
+  .then(res => res.json())
+  .then(data => {
+    powerStatus = data;
+
+    fetch('ukraine-oblasts.geojson')
+      .then(res => res.json())
+      .then(geo => {
+        L.geoJSON(geo, {
+          style: feature => ({
+            fillColor: getColor(powerStatus[feature.properties.name]),
+            weight: 1,
+            color: '#555',
+            fillOpacity: 0.75
+          }),
+          onEachFeature: (feature, layer) => {
+            const status = powerStatus[feature.properties.name] || 'on';
+            layer.bindPopup(
+              `<b>${feature.properties.name}</b><br>Статус: ${status}`
+            );
+          }
+        }).addTo(map);
+      });
+  });
+
+// автооновлення кожні 2 хв
+setInterval(() => location.reload(), 120000);
+</script>
+</body>
+  </html>
+  
